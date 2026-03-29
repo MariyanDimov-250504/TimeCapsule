@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }}'s Profile - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="display-1">👤</div>
+                    <h3>{{ profile_user.username }}</h3>
+                    {% if profile_user.first_name or profile_user.last_name %}
+                        <p class="text-muted">{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+                    {% endif %}
+                    {% if user == profile_user %}
+                        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">About</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Bio</h5>
+                    <p>{{ profile_user.bio|default:"No bio provided yet." }}</p>
+
+                    <hr>
+
+                    <h5>Account Information</h5>
+                    <p><strong>Email:</strong> {{ profile_user.email }}</p>
+                    <p><strong>Joined:</strong> {{ profile_user.date_joined|date:"F j, Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
