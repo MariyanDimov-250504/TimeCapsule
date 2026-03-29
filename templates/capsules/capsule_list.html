@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Public Capsules - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Public Time Capsules</h1>
+
+    {% if capsules %}
+        <div class="row">
+            {% for capsule in capsules %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow">
+                        {% if capsule.cover_image %}
+                            <img src="{{ capsule.cover_image.url }}" class="card-img-top" alt="{{ capsule.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="display-1">📦</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ capsule.title }}</h5>
+                            <p class="card-text text-muted">
+                                <small>Created by: {{ capsule.creator.username }}</small><br>
+                                <small>Opens: {{ capsule.open_date|date:"M d, Y" }}</small>
+                                {% if capsule.days_until_open > 0 %}
+                                    <small class="text-info"> 📅 Opens in {{ capsule.days_until_open }} days</small>
+                                {% endif %}
+                            </p>
+                            <p class="card-text">{{ capsule.description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'capsules:detail' capsule.pk %}" class="btn btn-primary btn-sm">View Capsule</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No public capsules available yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

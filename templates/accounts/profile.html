@@ -8,7 +8,11 @@
         <div class="col-md-4">
             <div class="card shadow">
                 <div class="card-body text-center">
-                    <div class="display-1">👤</div>
+                    {% if profile_user.profile_picture %}
+                        <img src="{{ profile_user.profile_picture.url }}" alt="{{ profile_user.username }}" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="display-1">👤</div>
+                    {% endif %}
                     <h3>{{ profile_user.username }}</h3>
                     {% if profile_user.first_name or profile_user.last_name %}
                         <p class="text-muted">{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
@@ -34,6 +38,48 @@
                     <h5>Account Information</h5>
                     <p><strong>Email:</strong> {{ profile_user.email }}</p>
                     <p><strong>Joined:</strong> {{ profile_user.date_joined|date:"F j, Y" }}</p>
+                </div>
+            </div>
+
+            <div class="card shadow mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">📦 Time Capsules Created</h4>
+                </div>
+                <div class="card-body">
+                    {% if profile_user.created_capsules.all %}
+                        <div class="row">
+                            {% for capsule in profile_user.created_capsules.all %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ capsule.title }}</h5>
+                                            <p class="card-text text-muted small">
+                                                Opens: {{ capsule.open_date|date:"M d, Y H:i" }}<br>
+                                                Status:
+                                                <span class="badge {% if capsule.status == 'sealed' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                                    {{ capsule.status }}
+                                                </span><br>
+                                                {% if capsule.days_until_open > 0 %}
+                                                    <small class="text-info">📅 Opens in {{ capsule.days_until_open }} days</small>
+                                                {% elif capsule.is_openable %}
+                                                    <small class="text-success">🔓 Ready to open!</small>
+                                                {% endif %}
+                                            </p>
+                                            <p class="card-text small">{{ capsule.description|truncatewords:15 }}</p>
+                                            <a href="{% url 'capsules:detail' capsule.id %}" class="btn btn-sm btn-outline-primary">View Capsule</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No capsules created yet.</p>
+                        {% if user == profile_user %}
+                            <div class="text-center">
+                                <a href="{% url 'capsules:create' %}" class="btn btn-primary btn-sm">Create Your First Capsule</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>

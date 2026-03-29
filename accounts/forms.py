@@ -47,9 +47,16 @@ class CustomUserCreationForm(UserCreationForm):
         })
     )
 
+    profile_picture = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'form-control'
+        })
+    )
+
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'bio', 'password1', 'password2']
+        fields = ['username', 'email', 'bio', 'profile_picture', 'password1', 'password2']
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -76,13 +83,14 @@ class CustomUserCreationForm(UserCreationForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'bio', 'first_name', 'last_name']
+        fields = ['username', 'email', 'bio', 'first_name', 'last_name', 'profile_picture']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

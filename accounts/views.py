@@ -60,3 +60,6 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Your profile has been updated successfully!')
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:profile', kwargs={'username': self.request.user.username})

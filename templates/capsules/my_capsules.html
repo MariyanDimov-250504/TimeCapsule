@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}My Capsules - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Time Capsules</h1>
+        <a href="{% url 'capsules:create' %}" class="btn btn-primary">+ Create New Capsule</a>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-6 mx-auto">
+            <form method="get" class="d-flex">
+                <input type="text"
+                       name="search"
+                       class="form-control me-2"
+                       placeholder="Search by title or description..."
+                       value="{{ search_query }}">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+                {% if search_query %}
+                    <a href="{% url 'capsules:my_capsules' %}" class="btn btn-outline-secondary ms-2">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4 mx-auto">
+            <form method="get" class="d-flex">
+                {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                {% endif %}
+                <select name="privacy" class="form-select me-2" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <option value="public" {% if privacy_filter == 'public' %}selected{% endif %}>🌍 Public</option>
+                    <option value="shared" {% if privacy_filter == 'shared' %}selected{% endif %}>👥 Shared</option>
+                    <option value="private" {% if privacy_filter == 'private' %}selected{% endif %}>🔒 Private</option>
+                </select>
+            </form>
+        </div>
+    </div>
+    {% if search_query %}
+        <div class="alert alert-info text-center">
+            Showing results for: <strong>"{{ search_query }}"</strong>
+            ({{ capsules|length }} capsule{{ capsules|length|pluralize }} found)
+        </div>
+    {% endif %}
+
+    {% if capsules %}
+        <div class="row">
+            {% for capsule in capsules %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow">
+                        {% if capsule.cover_image %}
+                            <img src="{{ capsule.cover_image.url }}" class="card-img-top" alt="{{ capsule.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="display-1">📦</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ capsule.title }}</h5>
+                            <p class="card-text text-muted">
+                                <small>Opens: {{ capsule.open_date|date:"M d, Y H:i" }}</small><br>
+                                <small>
+                                    Status:
+                                    <span class="badge bg-{% if capsule.status == 'sealed' %}warning{% else %}secondary{% endif %}">{{ capsule.status }}</span>
+                                    Privacy:
+                                    <span class="badge
+                                        {% if capsule.privacy == 'public' %}bg-success
+                                        {% elif capsule.privacy == 'shared' %}bg-info
+                                        {% else %}bg-secondary{% endif %}">
+                                        {% if capsule.privacy == 'public' %}🌍 Public
+                                        {% elif capsule.privacy == 'shared' %}👥 Shared
+                                        {% else %}🔒 Private{% endif %}
+                                    </span>
+                                </small><br>
+                                {% if capsule.days_until_open > 0 %}
+                                    <small class="text-info">📅 Opens in {{ capsule.days_until_open }} days</small>
+                                {% elif capsule.is_openable %}
+                                    <small class="text-success">🔓 Ready to open!</small>
+                                {% endif %}
+                            </p>
+                            <p class="card-text">{{ capsule.description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'capsules:detail' capsule.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                            <a href="{% url 'capsules:update' capsule.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            {% if search_query %}
+                No capsules found matching "{{ search_query }}".
+            {% else %}
+                <p>You haven't created any capsules yet.</p>
+                <a href="{% url 'capsules:create' %}" class="btn btn-primary">Create Your First Capsule</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

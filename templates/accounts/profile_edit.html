@@ -11,8 +11,15 @@
                     <h3 class="mb-0">Edit Your Profile</h3>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+
+                        {% if user.profile_picture %}
+                            <div class="text-center mb-3">
+                                <img src="{{ user.profile_picture.url }}" alt="Current profile picture" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                                <p class="small text-muted mt-1">Current profile picture</p>
+                            </div>
+                        {% endif %}
 
                         <div class="mb-3">
                             <label class="form-label">Username</label>
@@ -42,6 +49,12 @@
                         <div class="mb-3">
                             <label class="form-label">Bio</label>
                             {{ form.bio }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Profile Picture</label>
+                            {{ form.profile_picture }}
+                            <small class="form-text text-muted">Upload a new profile picture (JPG, PNG, GIF). Leave empty to keep current.</small>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">Save Changes</button>

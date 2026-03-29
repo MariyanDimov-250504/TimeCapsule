@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ capsule.title }} - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                {% if capsule.cover_image %}
+                    <img src="{{ capsule.cover_image.url }}" class="card-img-top" alt="{{ capsule.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h1 class="card-title">{{ capsule.title }}</h1>
+                    <p class="text-muted">
+                        Created by {{ capsule.creator.username }} on {{ capsule.created_at|date:"F j, Y" }}<br>
+                        <strong>Privacy:</strong>
+                        <span class="badge
+                        {% if capsule.privacy == 'public' %}bg-success
+                        {% elif capsule.privacy == 'shared' %}bg-info
+                        {% else %}bg-secondary{% endif %}">
+                        {% if capsule.privacy == 'public' %}🌍 Public - Anyone can view
+                        {% elif capsule.privacy == 'shared' %}👥 Shared - Only selected users
+                        {% else %}🔒 Private - Only you{% endif %}
+                    </span>
+                    </p>
+                    <hr>
+                    <p class="card-text">{{ capsule.description }}</p>
+
+                    <div class="alert alert-info mt-3">
+                        <strong>Opens on:</strong> {{ capsule.open_date|date:"F j, Y H:i" }}
+                    {% if capsule.days_until_open > 0 %}
+                        <br><strong>📅 {{ capsule.days_until_open }} days remaining</strong>
+                    {% elif capsule.is_openable %}
+                        <br><strong class="text-success">🔓 This capsule is ready to open!</strong>
+                    {% endif %}
+                    {% if not can_open and not capsule.is_openable %}
+                        <br><small>This capsule is not yet ready to be opened.</small>
+                    {% endif %}
+                </div>
+
+                    {% if can_open %}
+                        <div class="mt-4">
+                            <h3>Capsule Contents</h3>
+                            {% if contents %}
+                                {% for content in contents %}
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5>{{ content.get_content_type_display }}: {{ content.title|default:"Untitled" }}</h5>
+                                            {% if content.text_content %}
+                                                <p>{{ content.text_content }}</p>
+                                            {% endif %}
+                                            {% if content.image %}
+                                                <img src="{{ content.image.url }}" class="img-fluid" alt="Content image">
+                                            {% endif %}
+                                            <small class="text-muted">Added on {{ content.created_at|date:"F j, Y" }}</small>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No contents yet.</p>
+                            {% endif %}
+                        </div>
+                    {% elif user == capsule.creator and capsule.status == 'sealed' %}
+                        <a href="{% url 'capsules:add_content' capsule.pk %}" class="btn btn-primary">Add Content</a>
+                    {% endif %}
+
+                    {% if user == capsule.creator %}
+                        <div class="mt-3">
+                            <a href="{% url 'capsules:update' capsule.pk %}" class="btn btn-secondary">Edit Capsule</a>
+                            <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-danger">Delete Capsule</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
