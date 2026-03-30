@@ -82,3 +82,4 @@ class CapsuleContentForm(forms.ModelForm):
             self.add_error('image', 'Please upload an image.')
 
         return cleaned_data
+

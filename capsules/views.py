@@ -146,3 +146,4 @@ class AddContentView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['capsule'] = self.capsule
         return context
+

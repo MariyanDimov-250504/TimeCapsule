@@ -17,3 +17,4 @@ class CapsuleAdmin(admin.ModelAdmin):
 class CapsuleContentAdmin(admin.ModelAdmin):
     list_display = ['capsule', 'content_type', 'title', 'created_at']
     list_filter = ['content_type']
+

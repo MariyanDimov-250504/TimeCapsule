@@ -152,3 +152,4 @@ class CapsuleContent(models.Model):
 
     def __str__(self):
         return f"{self.get_content_type_display()} in {self.capsule.title}"
+

@@ -13,3 +13,4 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True
     )
+
