@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load capsule_filters %}
 {% block title %}{{ capsule.title }} - TimeCapsule{% endblock %}
 
 {% block content %}
@@ -9,9 +9,16 @@
             <div class="card shadow">
                 {% if capsule.cover_image %}
                     <img src="{{ capsule.cover_image.url }}" class="card-img-top" alt="{{ capsule.title }}">
+                {% else %}
+                    <div class="card-img-top bg-secondary text-white text-center py-5">
+                        <span class="display-1">📦</span>
+                    </div>
                 {% endif %}
                 <div class="card-body">
-                    <h1 class="card-title">{{ capsule.title }}</h1>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h1 class="card-title">{{ capsule.title }}</h1>
+                        <span class="badge bg-secondary">👁️ {{ capsule.views_count }} view{% if capsule.views_count != 1 %}s{% endif %}</span>
+                    </div>
                     <p class="text-muted">
                         Created by {{ capsule.creator.username }} on {{ capsule.created_at|date:"F j, Y" }}<br>
                         <strong>Privacy:</strong>
@@ -25,20 +32,26 @@
                     </span>
                     </p>
                     <hr>
-                    <p class="card-text">{{ capsule.description }}</p>
-
+                    <p class="card-text">
+                        {{ capsule.description|default:"<em class='text-muted'>No description provided</em>" }}
+                    </p>
+                    <p>
+                        Status:
+                        <span class="badge bg-{% if capsule.status == 'sealed' %}warning{% else %}secondary{% endif %}">
+                            {{ capsule.status|capsule_status_icon }} {{ capsule.status|title }}
+                        </span>
+                    </p>
                     <div class="alert alert-info mt-3">
                         <strong>Opens on:</strong> {{ capsule.open_date|date:"F j, Y H:i" }}
-                    {% if capsule.days_until_open > 0 %}
-                        <br><strong>📅 {{ capsule.days_until_open }} days remaining</strong>
-                    {% elif capsule.is_openable %}
-                        <br><strong class="text-success">🔓 This capsule is ready to open!</strong>
-                    {% endif %}
-                    {% if not can_open and not capsule.is_openable %}
-                        <br><small>This capsule is not yet ready to be opened.</small>
-                    {% endif %}
-                </div>
 
+                        {% if capsule.is_openable %}
+                            <br><strong class="text-success">🔓 This capsule is ready to open!</strong>
+                        {% elif capsule.open_date > now %}
+                            <br><strong>📅 {{ capsule.time_until_open }}</strong>
+                        {% else %}
+                            <br><small>This capsule is not yet ready to be opened.</small>
+                        {% endif %}
+                    </div>
                     {% if can_open %}
                         <div class="mt-4">
                             <h3>Capsule Contents</h3>
@@ -71,10 +84,51 @@
                             <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-danger">Delete Capsule</a>
                         </div>
                     {% endif %}
+
+                    {% if user.is_authenticated and user != capsule.creator %}
+                        <hr>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal">
+                            🚩 Report Inappropriate Content
+                        </button>
+
+                        <div class="modal fade" id="reportModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" action="{% url 'capsules:report' capsule.id %}">
+                                        {% csrf_token %}
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title">Report Capsule</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Reason</label>
+                                                <select name="reason" class="form-select" required>
+                                                    <option value="inappropriate">Inappropriate Content</option>
+                                                    <option value="sexual">Sexual Content</option>
+                                                    <option value="illegal">Illegal Activity</option>
+                                                    <option value="spam">Spam</option>
+                                                    <option value="harassment">Harassment</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Description (Optional)</label>
+                                                <textarea name="description" class="form-control" rows="3" placeholder="Provide additional details..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-danger">Submit Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

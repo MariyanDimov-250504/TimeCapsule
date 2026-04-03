@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Privacy Policy</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Last updated: {% now "F j, Y" %}</p>
+
+                    <h5>1. Information We Collect</h5>
+                    <p>We collect information you provide directly to us, including:</p>
+                    <ul>
+                        <li>Account information (username, email)</li>
+                        <li>Profile information (bio, profile picture)</li>
+                        <li>Capsule content (messages, images you upload)</li>
+                    </ul>
+
+                    <h5>2. How We Use Your Information</h5>
+                    <p>We use your information to:</p>
+                    <ul>
+                        <li>Provide and maintain the TimeCapsule service</li>
+                        <li>Send you notifications about your capsules</li>
+                        <li>Improve and personalize your experience</li>
+                    </ul>
+
+                    <h5>3. Data Sharing</h5>
+                    <p>Your capsule content is only shared according to your privacy settings:</p>
+                    <ul>
+                        <li><strong>Private:</strong> Only you can view</li>
+                        <li><strong>Shared:</strong> Only users you select can view</li>
+                        <li><strong>Public:</strong> Anyone can view</li>
+                    </ul>
+
+                    <h5>4. Your Controls</h5>
+                    <p>You can edit or delete your capsules and profile information at any time.</p>
+
+                    <h5>5. Contact</h5>
+                    <p>For privacy questions, contact the project administrator.</p>
+
+                    <div class="alert alert-info mt-3">
+                        <small>This is a student project for educational purposes.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

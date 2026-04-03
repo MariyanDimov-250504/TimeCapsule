@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Capsule, CapsuleContent
+from .models import Capsule, CapsuleContent, Report
 
 class CapsuleContentInline(admin.TabularInline):
     model = CapsuleContent
@@ -18,3 +18,19 @@ class CapsuleContentAdmin(admin.ModelAdmin):
     list_display = ['capsule', 'content_type', 'title', 'created_at']
     list_filter = ['content_type']
 
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ['capsule', 'reported_by', 'reason', 'status', 'created_at']
+    list_filter = ['status', 'reason']
+    actions = ['mark_reviewed', 'mark_action_taken']
+
+    def mark_reviewed(self, request, queryset):
+        queryset.update(status='reviewed')
+
+    mark_reviewed.short_description = "Mark as reviewed"
+
+    def mark_action_taken(self, request, queryset):
+        queryset.update(status='action_taken')
+
+    mark_action_taken.short_description = "Mark action taken"

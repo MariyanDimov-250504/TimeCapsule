@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.core.validators import MinLengthValidator, MinValueValidator
+from django.core.validators import MinLengthValidator
 from django.utils import timezone
-from datetime import date
 
 User = get_user_model()
 
@@ -17,7 +16,6 @@ class Capsule(models.Model):
     STATUS_CHOICES = [
         ('sealed', 'Sealed'),
         ('opened', 'Opened'),
-        ('expired', 'Expired'),
     ]
 
     title = models.CharField(
@@ -81,13 +79,6 @@ class Capsule(models.Model):
     def __str__(self):
         return f"{self.title} - {self.creator.username}"
 
-    def save(self, *args, **kwargs):
-        from django.utils import timezone
-        if self.open_date and not self.opened_at:
-            if self.open_date <= timezone.now():
-                self.status = 'expired'
-        super().save(*args, **kwargs)
-
     def can_user_view(self, user):
         if not user.is_authenticated:
             return self.privacy == 'public'
@@ -112,22 +103,31 @@ class Capsule(models.Model):
 
         return True
 
-    def increment_views(self):
-        self.views_count += 1
-        self.save(update_fields=['views_count'])
-
     @property
     def is_openable(self):
-        from django.utils import timezone
         return self.open_date <= timezone.now() and self.status == 'sealed'
 
     @property
-    def days_until_open(self):
-        from django.utils import timezone
-        if self.open_date > timezone.now():
-            delta = self.open_date - timezone.now()
-            return delta.days
-        return 0
+    def time_until_open(self):
+        if self.open_date <= timezone.now():
+            return "Ready to open!"
+
+        delta = self.open_date - timezone.now()
+        total_seconds = int(delta.total_seconds())
+
+        days = total_seconds // 86400
+        hours = (total_seconds % 86400) // 3600
+        minutes = (total_seconds % 3600) // 60
+
+        if days > 0:
+            return f"{days} day{'s' if days != 1 else ''} remaining"
+        elif hours > 0:
+            return f"{hours} hour{'s' if hours != 1 else ''} remaining"
+        elif minutes > 0:
+            return f"{minutes} minute{'s' if minutes != 1 else ''} remaining"
+        else:
+            return "Less than a minute remaining"
+
 
 class CapsuleContent(models.Model):
     CONTENT_TYPES = [
@@ -153,3 +153,33 @@ class CapsuleContent(models.Model):
     def __str__(self):
         return f"{self.get_content_type_display()} in {self.capsule.title}"
 
+
+class Report(models.Model):
+    REPORT_REASONS = [
+        ('inappropriate', 'Inappropriate Content'),
+        ('sexual', 'Sexual Content'),
+        ('illegal', 'Illegal Activity'),
+        ('spam', 'Spam'),
+        ('harassment', 'Harassment'),
+        ('other', 'Other'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('reviewed', 'Reviewed'),
+        ('dismissed', 'Dismissed'),
+        ('action_taken', 'Action Taken'),
+    ]
+
+    capsule = models.ForeignKey(Capsule, on_delete=models.CASCADE, related_name='reports')
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reports')
+    reason = models.CharField(max_length=20, choices=REPORT_REASONS)
+    description = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    reviewed_at = models.DateTimeField(blank=True, null=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='reviewed_reports')
+
+    def __str__(self):
+        return f"Report on {self.capsule.title} by {self.reported_by.username}"

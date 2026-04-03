@@ -11,5 +11,5 @@ urlpatterns = [
     path('<int:pk>/update/', views.CapsuleUpdateView.as_view(), name='update'),
     path('<int:pk>/delete/', views.CapsuleDeleteView.as_view(), name='delete'),
     path('<int:pk>/add-content/', views.AddContentView.as_view(), name='add_content'),
+    path('<int:pk>/report/', views.ReportCapsuleView.as_view(), name='report'),
 ]
-

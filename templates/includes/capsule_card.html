@@ -1,0 +1,29 @@
+{% load capsule_filters %}
+<div class="card h-100 shadow-sm">
+    {% if capsule.cover_image %}
+        <img src="{{ capsule.cover_image.url }}" class="card-img-top" alt="{{ capsule.title }}" style="height: 180px; object-fit: cover;">
+    {% else %}
+        <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 180px;">
+            <span class="display-3">{{ capsule.status|capsule_status_icon }}</span>
+        </div>
+    {% endif %}
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+            <h5 class="card-title">{{ capsule.title|truncate_chars:30 }}</h5>
+            <span title="{{ capsule.get_privacy_display }}">{{ capsule.privacy|privacy_icon }}</span>
+        </div>
+        <p class="card-text text-muted small">
+            By {{ capsule.creator.username }}<br>
+            Opens: {{ capsule.open_date|date:"M d, Y" }}
+        </p>
+        <p class="card-text">{{ capsule.description|truncate_chars:80 }}</p>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">👁️ {{ capsule.views_count }} views</small>
+            <small class="text-info">{{ capsule.time_until_open }}</small>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent">
+        <a href="{% url 'capsules:detail' capsule.id %}" class="btn btn-sm btn-outline-primary w-100">View Capsule</a>
+    </div>
+</div>

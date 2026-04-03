@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Capsule, CapsuleContent
-from datetime import date
 
 
 class CapsuleForm(forms.ModelForm):
@@ -42,8 +41,14 @@ class CapsuleForm(forms.ModelForm):
     def clean_open_date(self):
         open_date = self.cleaned_data.get('open_date')
         from django.utils import timezone
-        if open_date and open_date <= timezone.now():
-            raise ValidationError('Open date and time must be in the future.')
+        from datetime import timedelta
+
+        if not open_date:
+            raise ValidationError('Please select an open date and time.')
+        min_allowed = timezone.now() + timedelta(minutes=1)
+
+        if open_date <= min_allowed:
+            raise ValidationError('Open date and time must be at least 1 minute from now.')
         return open_date
 
     def clean(self):
@@ -82,4 +87,3 @@ class CapsuleContentForm(forms.ModelForm):
             self.add_error('image', 'Please upload an image.')
 
         return cleaned_data
-

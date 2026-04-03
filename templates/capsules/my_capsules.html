@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load capsule_filters %}
 {% block title %}My Capsules - TimeCapsule{% endblock %}
 
 {% block content %}
@@ -61,9 +61,12 @@
                             <h5 class="card-title">{{ capsule.title }}</h5>
                             <p class="card-text text-muted">
                                 <small>Opens: {{ capsule.open_date|date:"M d, Y H:i" }}</small><br>
+                                <small>👁️ {{ capsule.views_count }} view{% if capsule.views_count != 1 %}s{% endif %}</small><br>
                                 <small>
                                     Status:
-                                    <span class="badge bg-{% if capsule.status == 'sealed' %}warning{% else %}secondary{% endif %}">{{ capsule.status }}</span>
+                                    <span class="badge bg-{% if capsule.status == 'sealed' %}warning{% else %}secondary{% endif %}">
+                                        {{ capsule.status|capsule_status_icon }} {{ capsule.status|title }}
+                                    </span>
                                     Privacy:
                                     <span class="badge
                                         {% if capsule.privacy == 'public' %}bg-success
@@ -74,11 +77,7 @@
                                         {% else %}🔒 Private{% endif %}
                                     </span>
                                 </small><br>
-                                {% if capsule.days_until_open > 0 %}
-                                    <small class="text-info">📅 Opens in {{ capsule.days_until_open }} days</small>
-                                {% elif capsule.is_openable %}
-                                    <small class="text-success">🔓 Ready to open!</small>
-                                {% endif %}
+                                <small class="text-info">📅 {{ capsule.time_until_open }}</small>
                             </p>
                             <p class="card-text">{{ capsule.description|truncatewords:20 }}</p>
                         </div>
@@ -91,6 +90,37 @@
                 </div>
             {% endfor %}
         </div>
+        {% if is_paginated %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     {% else %}
         <div class="alert alert-info text-center">
             {% if search_query %}
@@ -103,4 +133,3 @@
     {% endif %}
 </div>
 {% endblock %}
-

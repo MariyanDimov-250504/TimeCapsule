@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="display-1 text-muted">500</div>
+            <h1 class="display-4">Server Error</h1>
+            <p class="lead">Something went wrong on our end. Please try again later.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

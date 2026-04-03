@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms of Service - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Terms of Service</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Last updated: {% now "F j, Y" %}</p>
+
+                    <h5>1. Acceptance of Terms</h5>
+                    <p>By using TimeCapsule, you agree to these terms.</p>
+
+                    <h5>2. User Accounts</h5>
+                    <p>You are responsible for maintaining the security of your account.</p>
+
+                    <h5>3. Your Content</h5>
+                    <p>You retain ownership of all content you create. You are responsible for the content you upload.</p>
+
+                    <h5>4. Acceptable Use</h5>
+                    <p>You agree NOT to:</p>
+                    <ul>
+                        <li>Upload illegal or harmful content</li>
+                        <li>Infringe on others' intellectual property</li>
+                        <li>Use the service for harassment</li>
+                        <li>Attempt to bypass security measures</li>
+                    </ul>
+
+                    <h5>5. Service Availability</h5>
+                    <p>This is a student project - service may be modified or discontinued.</p>
+
+                    <h5>6. Changes to Terms</h5>
+                    <p>We may update these terms. Continued use means acceptance.</p>
+
+                    <div class="alert alert-warning mt-3">
+                        <small><strong>Educational Project Notice:</strong> This is a course project for learning purposes, not a commercial service.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

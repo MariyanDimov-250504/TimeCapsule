@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load capsule_filters %}
+
+{% block title %}About - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">About TimeCapsule</h2>
+                </div>
+                <div class="card-body">
+                    <h4>Preserving Memories for the Future</h4>
+                    <p>TimeCapsule is a digital platform that allows you to create virtual time capsules - collections of messages, photos, and memories that are sealed until a future date of your choosing.</p>
+
+                    <h4 class="mt-4">Our Mission</h4>
+                    <p>We believe that meaningful moments deserve to be preserved and rediscovered. Whether it's a letter to your future self, memories of a special occasion, or hopes and dreams for tomorrow, TimeCapsule helps you capture and protect what matters most.</p>
+
+                    <h4 class="mt-4">By the Numbers</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total Capsules Created
+                            <span class="badge bg-primary rounded-pill">{{ site_total_capsules }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Public Capsules
+                            <span class="badge bg-primary rounded-pill">{{ site_public_capsules }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Registered Users
+                            <span class="badge bg-primary rounded-pill">{{ site_total_users }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
