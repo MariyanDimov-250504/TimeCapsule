@@ -80,7 +80,7 @@ class Capsule(models.Model):
         return f"{self.title} - {self.creator.username}"
 
     def can_user_view(self, user):
-        if not user.is_authenticated:
+        if user is None or not user.is_authenticated:
             return self.privacy == 'public'
 
         if user == self.creator:
