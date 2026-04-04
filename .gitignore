@@ -1,10 +1,13 @@
 venv/
 .venv/
+.env
 __pycache__/
 *.pyc
-.env
 media/
+
+.vscode/
 staticfiles/
 .idea/
 *.log
 sent_emails/
+*.sqlite3
