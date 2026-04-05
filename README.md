@@ -34,11 +34,13 @@ A web application where users can create digital time capsules with messages and
     REDIS_URL=redis://localhost:6379 (this is by default)
 
 6. Start localhost testing: 
+
 python manage.py makemigrations 
 
 python manage.py migrate 
 
 python manage.py runserver 
+
 7. Make sure Redis is running on your system (in searchbar open Services, find Redis, status Running)
 8. In terminal run (separate): celery -A TimeCapsule worker --loglevel=info
 9. Visit http://127.0.0.1:8000
