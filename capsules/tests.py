@@ -163,10 +163,18 @@ class CapsuleViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='creator', password='pass')
         self.future_date = timezone.now() + timedelta(days=30)
+        self.past_date = timezone.now() - timedelta(days=1)
         self.capsule = Capsule.objects.create(
             title='Test Capsule',
             creator=self.user,
             open_date=self.future_date,
+            privacy='public'
+        )
+        self.opened_capsule = Capsule.objects.create(
+            title='Opened Capsule',
+            creator=self.user,
+            open_date=self.past_date,
+            status='opened',
             privacy='public'
         )
 
@@ -216,3 +224,36 @@ class CapsuleViewTests(TestCase):
         response = self.client.post(reverse('capsules:delete', kwargs={'pk': self.capsule.pk}))
         self.assertEqual(response.status_code, 302)  # Redirect after delete
         self.assertFalse(Capsule.objects.filter(pk=self.capsule.pk).exists())
+
+    def test_update_capsule_sealed(self):
+        self.client.login(username='creator', password='pass')
+        response = self.client.post(reverse('capsules:update', kwargs={'pk': self.capsule.pk}), {
+            'title': 'Updated Title',
+            'description': 'Updated Description',
+            'open_date': self.future_date.strftime('%Y-%m-%d %H:%M'),
+            'privacy': 'public',
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.capsule.refresh_from_db()
+        self.assertEqual(self.capsule.title, 'Updated Title')
+
+    def test_cannot_update_opened_capsule(self):
+        self.client.login(username='creator', password='pass')
+        response = self.client.get(reverse('capsules:update', kwargs={'pk': self.opened_capsule.pk}))
+        self.assertEqual(response.status_code, 403)  # Forbidden
+
+    def test_cannot_delete_opened_capsule(self):
+        self.client.login(username='creator', password='pass')
+        response = self.client.get(reverse('capsules:delete', kwargs={'pk': self.opened_capsule.pk}))
+        self.assertEqual(response.status_code, 403)  # Forbidden
+
+    def test_cannot_add_content_to_opened_capsule(self):
+        self.client.login(username='creator', password='pass')
+        response = self.client.get(reverse('capsules:add_content', kwargs={'pk': self.opened_capsule.pk}))
+        self.assertEqual(response.status_code, 403)  # Forbidden
+
+    def test_can_add_content_to_sealed_capsule(self):
+        self.client.login(username='creator', password='pass')
+        response = self.client.get(reverse('capsules:add_content', kwargs={'pk': self.capsule.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'capsules/add_content.html')

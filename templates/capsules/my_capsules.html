@@ -77,14 +77,20 @@
                                         {% else %}🔒 Private{% endif %}
                                     </span>
                                 </small><br>
-                                <small class="text-info">📅 {{ capsule.time_until_open }}</small>
+                                {% if capsule.status == 'sealed' %}
+                                    <small class="text-info">📅 {{ capsule.time_until_open }}</small>
+                                {% elif capsule.status == 'opened' %}
+                                    <small class="text-success">✨ Opened on {{ capsule.opened_at|date:"M d, Y H:i" }}</small>
+                                {% endif %}
                             </p>
                             <p class="card-text">{{ capsule.description|truncatewords:20 }}</p>
                         </div>
                         <div class="card-footer bg-transparent">
                             <a href="{% url 'capsules:detail' capsule.pk %}" class="btn btn-sm btn-outline-primary">View</a>
-                            <a href="{% url 'capsules:update' capsule.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                            <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            {% if capsule.status == 'sealed' %}
+                                <a href="{% url 'capsules:update' capsule.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

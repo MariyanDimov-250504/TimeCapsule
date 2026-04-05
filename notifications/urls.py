@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.generic import ListView
 from .models import Notification
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from . import views
 
 class NotificationListView(LoginRequiredMixin, ListView):
     model = Notification
@@ -17,4 +17,5 @@ app_name = 'notifications'
 
 urlpatterns = [
     path('', NotificationListView.as_view(), name='list'),
+    path('<int:pk>/delete/', views.NotificationDeleteView.as_view(), name='delete'),
 ]

@@ -15,16 +15,31 @@
                         {% csrf_token %}
 
                         {% for field in form %}
-                            <div class="mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                {{ field }}
-                                {% if field.help_text %}
-                                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                                {% endif %}
-                                {% for error in field.errors %}
-                                    <div class="text-danger">{{ error }}</div>
-                                {% endfor %}
-                            </div>
+                            {% if field.name == 'allowed_users' %}
+                                <div id="allowed-users-group" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.help_text %}
+                                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                                        {% endif %}
+                                        {% for error in field.errors %}
+                                            <div class="text-danger">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         {% endfor %}
 
                         <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update{% else %}Create{% endif %} Capsule</button>
@@ -35,5 +50,23 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
+<script>
+    const privacySelect = document.querySelector('select[name="privacy"]');
+    const allowedUsersGroup = document.getElementById('allowed-users-group');
+
+    function toggleAllowedUsers() {
+        if (privacySelect && allowedUsersGroup) {
+            if (privacySelect.value === 'shared') {
+                allowedUsersGroup.style.display = 'block';
+            } else {
+                allowedUsersGroup.style.display = 'none';
+            }
+        }
+    }
+    if (privacySelect) {
+        toggleAllowedUsers();
+        privacySelect.addEventListener('change', toggleAllowedUsers);
+    }
+</script>
+{% endblock %}

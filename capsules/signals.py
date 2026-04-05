@@ -1,7 +1,6 @@
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 from .models import Capsule
-from notifications.tasks import send_capsule_shared_notification
 from notifications.models import Notification
 
 @receiver(post_save, sender=Capsule)
@@ -17,7 +16,6 @@ def check_capsule_ready(sender, instance, created, **kwargs):
 
 @receiver(m2m_changed, sender=Capsule.allowed_users.through)
 def capsule_shared(sender, instance, action, reverse, model, pk_set, **kwargs):
-    """Send notification when capsule is shared with new users"""
     if action == 'post_add':
         for user_id in pk_set:
             Notification.objects.create(
@@ -25,11 +23,5 @@ def capsule_shared(sender, instance, action, reverse, model, pk_set, **kwargs):
                 notification_type='capsule_shared',
                 title=f'Capsule "{instance.title}" Shared With You',
                 message=f'{instance.creator.username} shared their time capsule with you.',
-                link=f'/capsules/{instance.id}/'
-            )
-            send_capsule_shared_notification.delay(
-                user_id,
-                instance.creator.username,
-                instance.title,
-                f'/capsules/{instance.id}/'
+                link=f'/capsules/{instance.id}/'  # This should be correct
             )

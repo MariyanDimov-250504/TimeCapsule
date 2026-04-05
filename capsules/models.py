@@ -128,6 +128,9 @@ class Capsule(models.Model):
         else:
             return "Less than a minute remaining"
 
+    @property
+    def can_be_edited(self):
+        return self.status == 'sealed'
 
 class CapsuleContent(models.Model):
     CONTENT_TYPES = [

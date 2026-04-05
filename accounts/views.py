@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, UserProfileForm
 from .models import CustomUser
@@ -64,3 +64,15 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('accounts:profile', kwargs={'username': self.request.user.username})
 
+
+class ProfileDeleteView(LoginRequiredMixin, DeleteView):
+    model = CustomUser
+    template_name = 'accounts/profile_confirm_delete.html'
+    success_url = reverse_lazy('home')
+
+    def get_object(self):
+        return self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        logout(request)
+        return super().delete(request, *args, **kwargs)

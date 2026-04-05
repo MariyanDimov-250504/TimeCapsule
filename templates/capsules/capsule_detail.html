@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="card shadow">
                 {% if capsule.cover_image %}
                     <img src="{{ capsule.cover_image.url }}" class="card-img-top" alt="{{ capsule.title }}">
@@ -41,20 +41,35 @@
                             {{ capsule.status|capsule_status_icon }} {{ capsule.status|title }}
                         </span>
                     </p>
-                    <div class="alert alert-info mt-3">
-                        <strong>Opens on:</strong> {{ capsule.open_date|date:"F j, Y H:i" }}
 
-                        {% if capsule.is_openable %}
-                            <br><strong class="text-success">🔓 This capsule is ready to open!</strong>
-                        {% elif capsule.open_date > now %}
-                            <br><strong>📅 {{ capsule.time_until_open }}</strong>
+                    <div class="alert alert-info mt-3">
+                        {% if capsule.status == 'opened' %}
+                            <strong>📅 Opened on:</strong> {{ capsule.opened_at|date:"F j, Y H:i" }}
                         {% else %}
-                            <br><small>This capsule is not yet ready to be opened.</small>
+                            <strong>📅 Opens on:</strong> {{ capsule.open_date|date:"F j, Y H:i" }}
+                            {% if capsule.is_openable and capsule.status == 'sealed' %}
+                                <br><strong class="text-success">🔓 This capsule is ready to open!</strong>
+                            {% elif capsule.open_date > now %}
+                                <br><strong>⏰ {{ capsule.time_until_open }}</strong>
+                            {% endif %}
                         {% endif %}
                     </div>
-                    {% if can_open %}
+
+                    {% if capsule.is_openable and capsule.status == 'sealed' and can_open %}
+                        <div class="alert alert-success text-center">
+                            <strong>🎉 This capsule is ready to be opened! 🎉</strong>
+                            <form method="post" action="{% url 'capsules:open' capsule.id %}" class="mt-2">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    🔓 Open Capsule Now 🔓
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+
+                    {% if capsule.status == 'opened' %}
                         <div class="mt-4">
-                            <h3>Capsule Contents</h3>
+                            <h3>📖 Capsule Contents</h3>
                             {% if contents %}
                                 {% for content in contents %}
                                     <div class="card mb-3">
@@ -71,14 +86,22 @@
                                     </div>
                                 {% endfor %}
                             {% else %}
-                                <p>No contents yet.</p>
+                                <p>No contents in this capsule.</p>
                             {% endif %}
                         </div>
-                    {% elif user == capsule.creator and capsule.status == 'sealed' %}
-                        <a href="{% url 'capsules:add_content' capsule.pk %}" class="btn btn-primary">Add Content</a>
+                    {% elif capsule.is_openable and capsule.status == 'sealed' %}
+                        <div class="mt-4 text-center">
+                            <p class="text-muted">✨ Open the capsule above to reveal its contents ✨</p>
+                        </div>
+                    {% elif capsule.status == 'sealed' and not capsule.is_openable %}
+                        <div class="mt-4">
+                            {% if user == capsule.creator %}
+                                <a href="{% url 'capsules:add_content' capsule.pk %}" class="btn btn-primary">Add Content</a>
+                            {% endif %}
+                        </div>
                     {% endif %}
 
-                    {% if user == capsule.creator %}
+                    {% if user == capsule.creator and capsule.status == 'sealed' %}
                         <div class="mt-3">
                             <a href="{% url 'capsules:update' capsule.pk %}" class="btn btn-secondary">Edit Capsule</a>
                             <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-danger">Delete Capsule</a>

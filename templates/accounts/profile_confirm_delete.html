@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Profile - TimeCapsule{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Delete Your Account</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p>Are you sure you want to permanently delete your account?</p>
+                    <p class="text-danger">⚠️ This will also delete ALL your capsules and content. This action cannot be undone!</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Yes, Delete My Account</button>
+                        <a href="{% url 'accounts:profile' user.username %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

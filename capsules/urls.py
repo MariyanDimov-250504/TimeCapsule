@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:pk>/delete/', views.CapsuleDeleteView.as_view(), name='delete'),
     path('<int:pk>/add-content/', views.AddContentView.as_view(), name='add_content'),
     path('<int:pk>/report/', views.ReportCapsuleView.as_view(), name='report'),
+    path('<int:pk>/open/', views.OpenCapsuleView.as_view(), name='open'),
 ]

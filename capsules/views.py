@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.db import models
@@ -106,7 +106,7 @@ class CapsuleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         capsule = self.get_object()
-        return self.request.user == capsule.creator
+        return self.request.user == capsule.creator and capsule.status == 'sealed'
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -134,12 +134,11 @@ class CapsuleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         capsule = self.get_object()
-        return self.request.user == capsule.creator
+        return self.request.user == capsule.creator and capsule.status == 'sealed'
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Capsule has been deleted.')
         return super().delete(request, *args, **kwargs)
-
 
 class AddContentView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = CapsuleContent
@@ -195,3 +194,19 @@ class ReportCapsuleView(LoginRequiredMixin, CreateView):
     def form_invalid(self, form):
         messages.error(self.request, 'There was an error submitting your report. Please try again.')
         return redirect('capsules:detail', pk=self.capsule.pk)
+
+
+class OpenCapsuleView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        capsule = get_object_or_404(Capsule, pk=pk)
+
+        if not capsule.can_user_open(request.user):
+            messages.error(request, 'You cannot open this capsule yet.')
+            return redirect('capsules:detail', pk=pk)
+
+        capsule.status = 'opened'
+        capsule.opened_at = timezone.now()
+        capsule.save()
+
+        messages.success(request, f'🎉 You opened "{capsule.title}"! The memories inside are now revealed.')
+        return redirect('capsules:detail', pk=pk)
