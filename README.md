@@ -70,23 +70,23 @@ Bootstrap 5
 
 📝 Environment Variables 
 
-Variable        Description
+Variable       |Description
 
-SECRET_KEY      Django secret key
+SECRET_KEY     |Django secret key
 
-DEBUG           Set to False in production
+DEBUG          |Set to False in production
 
-DB_NAME         PostgreSQL database name
+DB_NAME        |PostgreSQL database name
 
-DB_USER         PostgreSQL username
+DB_USER        |PostgreSQL username
 
-DB_PASSWORD     PostgreSQL password
+DB_PASSWORD    |PostgreSQL password
 
-DB_HOST         Database host
+DB_HOST        |Database host
 
-DB_PORT         Database port (5432)
+DB_PORT        |Database port (5432)
 
-REDIS_URL       Redis connection URL
+REDIS_URL      |Redis connection URL
 
 
 👥 User Groups
