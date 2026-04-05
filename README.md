@@ -54,6 +54,7 @@ REST API endpoints
 
 Responsive design with Bootstrap 5
 
+
 🗄️ Tech Stack
 
 Django 6.0
@@ -65,6 +66,7 @@ Redis & Celery (async tasks)
 Django REST Framework
 
 Bootstrap 5
+
 
 📝 Environment Variables 
 
@@ -85,6 +87,7 @@ DB_HOST         Database host
 DB_PORT         Database port (5432)
 
 REDIS_URL       Redis connection URL
+
 
 👥 User Groups
 
