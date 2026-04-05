@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-tdz#3d=to2wzgiz49u(e%v6-$9v*ofu(o#_igbsc+x*i#z(be@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DEBUG', 'True') == 'False'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com', '.herokuapp.com']
 
