@@ -134,7 +134,7 @@ class CapsuleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         capsule = self.get_object()
-        return self.request.user == capsule.creator and capsule.status == 'sealed'
+        return self.request.user == capsule.creator
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Capsule has been deleted.')

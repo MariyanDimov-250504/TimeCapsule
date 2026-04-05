@@ -89,8 +89,8 @@
                             <a href="{% url 'capsules:detail' capsule.pk %}" class="btn btn-sm btn-outline-primary">View</a>
                             {% if capsule.status == 'sealed' %}
                                 <a href="{% url 'capsules:update' capsule.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
                             {% endif %}
+                            <a href="{% url 'capsules:delete' capsule.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
                         </div>
                     </div>
                 </div>
