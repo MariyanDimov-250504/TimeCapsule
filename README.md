@@ -35,34 +35,59 @@ Use command: python manage.py test
 
 
 📦 Features
+
 User registration, login, profile with picture
+
 Create time capsules with future opening dates
+
 Privacy levels: Public, Shared, Private
+
 Add text and image content to capsules
+
 Share capsules with specific users
+
 Real-time notifications when capsules are shared
+
 Report inappropriate content
+
 REST API endpoints
+
 Responsive design with Bootstrap 5
 
 🗄️ Tech Stack
+
 Django 6.0
+
 PostgreSQL
+
 Redis & Celery (async tasks)
+
 Django REST Framework
+
 Bootstrap 5
 
 📝 Environment Variables 
+
 Variable        Description
+
 SECRET_KEY      Django secret key
+
 DEBUG           Set to False in production
+
 DB_NAME         PostgreSQL database name
+
 DB_USER         PostgreSQL username
+
 DB_PASSWORD     PostgreSQL password
+
 DB_HOST         Database host
+
 DB_PORT         Database port (5432)
+
 REDIS_URL       Redis connection URL
 
 👥 User Groups
+
 Timekeeper: Can open any capsule
+
 Guardian: Can verify capsules
