@@ -16,14 +16,23 @@ A web application where users can create digital time capsules with messages and
     CREATE DATABASE timecapsule_db;
     CREATE USER 'timecapsule_user' WITH PASSWORD 'your_password';
 5. Create .env file:
+
     DB_NAME=timecapsule_db
+
     DB_USER=timecapsule_user
+
     DB_PASSWORD=your_password
+
     DB_HOST=localhost
+
     DB_PORT=5432
+
     SECRET_KEY=your_secret_key
+
     DEBUG=False
+
     REDIS_URL=redis://localhost:6379 (this is by default)
+
 6. Start localhost testing: python manage.py runserver
 7. Make sure Redis is running on your system (in searchbar open Services, find Redis, status Running)
 8. In terminal run (separate): celery -A TimeCapsule worker --loglevel=info
