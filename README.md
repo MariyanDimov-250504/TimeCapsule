@@ -39,7 +39,7 @@ python manage.py makemigrations
 
 python manage.py migrate 
 
-python manage.py runserver 
+python manage.py runserver
 
 7. Make sure Redis is running on your system (in searchbar open Services, find Redis, status Running)
 8. In terminal run (separate): celery -A TimeCapsule worker --loglevel=info
@@ -54,6 +54,7 @@ edit the open time to show the closest time in order to skip long waiting.
 ### Running tests
 Use command: python manage.py test
 
+### About
 📦 Features
 
 User registration, login, profile with picture
