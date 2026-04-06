@@ -57,7 +57,6 @@
 
                     {% if capsule.is_openable and capsule.status == 'sealed' and can_open %}
                         <div class="alert alert-success text-center">
-                            <strong>🎉 This capsule is ready to be opened! 🎉</strong>
                             <form method="post" action="{% url 'capsules:open' capsule.id %}" class="mt-2">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-success btn-lg">

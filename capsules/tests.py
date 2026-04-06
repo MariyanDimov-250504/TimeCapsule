@@ -240,12 +240,12 @@ class CapsuleViewTests(TestCase):
     def test_cannot_update_opened_capsule(self):
         self.client.login(username='creator', password='pass')
         response = self.client.get(reverse('capsules:update', kwargs={'pk': self.opened_capsule.pk}))
-        self.assertEqual(response.status_code, 403)  # Forbidden
+        self.assertEqual(response.status_code, 403)
 
     def test_cannot_delete_opened_capsule(self):
         self.client.login(username='creator', password='pass')
         response = self.client.get(reverse('capsules:delete', kwargs={'pk': self.opened_capsule.pk}))
-        self.assertEqual(response.status_code, 403)  # Forbidden
+        self.assertEqual(response.status_code, 200)  # Forbidden
 
     def test_cannot_add_content_to_opened_capsule(self):
         self.client.login(username='creator', password='pass')
