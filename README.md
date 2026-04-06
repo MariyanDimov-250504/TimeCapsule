@@ -31,7 +31,7 @@ A web application where users can create digital time capsules with messages and
 
     DEBUG=False
 
-    REDIS_URL=redis://localhost:6379 (this is by default !Remove when testing celery!)
+    REDIS_URL=redis://localhost:6379 
 
 6. Start localhost testing: 
 
