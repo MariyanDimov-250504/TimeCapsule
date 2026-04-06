@@ -46,9 +46,13 @@ python manage.py runserver
 9. Visit http://127.0.0.1:8000
 10. You can visit Render demo: https://timecapsule-project.onrender.com
 
+### Note
+
+When testing the functionality of the capsules 
+edit the open time to show the closest time in order to skip long waiting.
+
 ### Running tests
 Use command: python manage.py test
-
 
 📦 Features
 
