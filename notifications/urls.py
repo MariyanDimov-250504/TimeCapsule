@@ -18,4 +18,5 @@ app_name = 'notifications'
 urlpatterns = [
     path('', NotificationListView.as_view(), name='list'),
     path('<int:pk>/delete/', views.NotificationDeleteView.as_view(), name='delete'),
+    path('<int:pk>/mark-read/', views.NotificationMarkAsReadView.as_view(), name='mark_read'),
 ]

@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.site_stats',
                 'core.context_processors.current_year',
+                'core.context_processors.notification_count',
             ],
         },
     },

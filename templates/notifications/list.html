@@ -19,7 +19,10 @@
                             <p class="mb-1">{{ notification.message }}</p>
                             <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
                             {% if notification.link %}
-                                <a href="{{ notification.link }}" class="btn btn-sm btn-outline-primary ms-2">View</a>
+                                <form method="post" action="{% url 'notifications:mark_read' notification.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-primary ms-2">View</button>
+                                </form>
                             {% endif %}
                         </div>
                         <a href="{% url 'notifications:delete' notification.pk %}"
