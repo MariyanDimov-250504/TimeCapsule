@@ -118,11 +118,23 @@ class Capsule(models.Model):
         days = total_seconds // 86400
         hours = (total_seconds % 86400) // 3600
         minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+
+        if seconds > 0 and minutes == 0:
+            minutes = 1
+        elif seconds > 0 and minutes > 0:
+            minutes = minutes + 1
+            if minutes >= 60:
+                hours = hours + 1
+                minutes = 0
+                if hours >= 24:
+                    days = days + 1
+                    hours = 0
 
         if days > 0:
             return f"{days} day{'s' if days != 1 else ''} remaining"
         elif hours > 0:
-            return f"{hours} hour{'s' if hours != 1 else ''} remaining"
+            return f"{hours}h {minutes}m remaining"
         elif minutes > 0:
             return f"{minutes} minute{'s' if minutes != 1 else ''} remaining"
         else:
